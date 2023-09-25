@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "17052002",
+    "database": "local_db_todo",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "17052002",
+    "database": "test_db_todo",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postgres",
+    "password": "17052002",
+    "database": "production_db_todo",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  }
+}
