@@ -1,16 +1,18 @@
 import 'dotenv/config'
 import express from 'express'
+import {TaskController} from "./controllers/index.js";
 
 const app = express()
-const port = process.env.PORT
+const port = process.env.PORT3001
+const domain = process.env.DOMAIN
 app.use(express.json())
 
-app.get('/', (req, res) => res.json(
-    {
-        title: 'Port',
-        port: port
-    }))
+app.get('/', TaskController.getAllTasks)
+app.post('/', TaskController.createTask)
+app.delete('/', TaskController.deleteTask)
+app.put('/', TaskController.updateTask)
+
 
 app.listen(port, () => {
-    console.log(`Server started on port ${port}`)
+    console.log('Server started on ' + domain + ':' + port)
 })
