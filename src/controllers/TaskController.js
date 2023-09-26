@@ -1,42 +1,54 @@
 import { TaskModel } from "../../models/TaskModel.js";
 
-
-
-
 export const getAllTasks = async (req, res) => {
     try {
         const pageSize = 7
-        let tasks = null
+        let tasks = {
+            tasks: [],
+            totalTasks: null
+        }
 
         switch (req.query.filter) {
 
             case 'All':
-                tasks = await TaskModel.findAll({
+                tasks.tasks = await TaskModel.findAll({
                     offset: (req.query.currentPage - 1) * pageSize,
                     limit: 7
                 })
+                tasks.totalTasks = (await TaskModel.findAll()).length
+
                 break
 
             case 'Done':
-                tasks = await TaskModel.findAll({
+                tasks.tasks = await TaskModel.findAll({
                     where: {
                         isDone: true
                     },
                     offset: (req.query.currentPage - 1) * pageSize,
                     limit: 7
                 })
+                tasks.totalTasks = (await TaskModel.findAll({
+                    where: {
+                        isDone: true
+                    }
+                })).length
                 break
             case 'Undone':
-                tasks = await TaskModel.findAll({
+                tasks.tasks = await TaskModel.findAll({
                     where: {
                         isDone: false
                     },
                     offset: (req.query.currentPage - 1) * pageSize,
                     limit: 7
                 })
+                tasks.totalTasks = (await TaskModel.findAll({
+                    where: {
+                        isDone: false
+                    }
+                })).length
                 break
             case 'firstNew':
-                tasks = await TaskModel.findAll({
+                tasks.tasks = await TaskModel.findAll({
                     order: [
                         ['date', 'DESC'],
                         ['id', 'DESC']
@@ -44,9 +56,15 @@ export const getAllTasks = async (req, res) => {
                     offset: (req.query.currentPage - 1) * pageSize,
                     limit: 7
                 })
+                tasks.totalTasks = (await TaskModel.findAll({
+                    order: [
+                        ['date', 'DESC'],
+                        ['id', 'DESC']
+                    ]
+                })).length
                 break
             case 'firstOld':
-                tasks = await TaskModel.findAll({
+                tasks.tasks = await TaskModel.findAll({
                     order: [
                         ['date'],
                         ['id']
@@ -54,16 +72,33 @@ export const getAllTasks = async (req, res) => {
                     offset: (req.query.currentPage - 1) * pageSize,
                     limit: 7
                 })
+                tasks.totalTasks = (await TaskModel.findAll({
+                    order: [
+                        ['date'],
+                        ['id']
+                    ]
+                })).length
+
                 break
 
             default:
-                tasks = await TaskModel.findAll({
+                tasks.tasks = await TaskModel.findAll({
                     where: {
                         date: new Date().toLocaleString().slice(0, 10)
                     },
+                    order: [
+                        ['id']
+                    ],
                     offset: (req.query.currentPage - 1) * pageSize,
                     limit: 7
                 })
+
+                tasks.totalTasks = (await TaskModel.findAll({
+                    where: {
+                        date: new Date().toLocaleString().slice(0, 10)
+                    }
+                })).length
+
         }
 
         res.json(tasks)
@@ -108,13 +143,29 @@ export const deleteTask = async (req, res) => {
 
 export const updateTask = async (req, res) => {
     try {
-        await TaskModel.update({
-            id: req.body.id
-        }, {
-            where: {
+
+        if (req.body.name) {
+            await TaskModel.update({
                 name: req.body.name
-            }
-        })
+            }, {
+                where: {
+                    id: req.body.id
+                }
+            })
+        } else {
+            const task = await TaskModel.findOne({
+                where: {
+                    id: req.body.id
+                }
+            })
+            await TaskModel.update({
+                isDone: !task.isDone
+            }, {
+                where: {
+                    id: req.body.id
+                }
+            })
+        }
 
         res.json({
             message: 'task updated'
