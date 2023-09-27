@@ -1,9 +1,5 @@
-import { DataTypes, Sequelize } from "sequelize";
-
-const sequelize = new Sequelize('local_db_todo', 'postgres', '17052002', {
-  host: 'localhost',
-  dialect: 'postgres'
-})
+import { DataTypes } from "sequelize";
+import { sequelize } from "./sequelize.js";
 
 export const TaskModel = sequelize.define('Task', {
   name: DataTypes.STRING,
