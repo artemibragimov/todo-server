@@ -16,6 +16,5 @@ export const TaskModel = sequelize.define('Task', {
     defaultValue: new Date().toLocaleString().slice(0, 10)
   }
 }, {
-  timestamps: true,
-  updatedAt: false
+  timestamps: false
 });
