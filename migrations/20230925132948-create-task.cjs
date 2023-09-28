@@ -13,12 +13,13 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      isDone: {
-        type: Sequelize.BOOLEAN
+      isDone: Sequelize.BOOLEAN,
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: false
       },
-      date: {
-        type: Sequelize.STRING
-      }
+      date:  Sequelize.STRING,
+      time: Sequelize.STRING,
     });
   },
   async down(queryInterface, Sequelize) {

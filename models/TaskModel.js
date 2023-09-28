@@ -7,9 +7,15 @@ export const TaskModel = sequelize.define('Task', {
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
-  date: {
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  date:{
     type: DataTypes.STRING,
-    defaultValue: new Date().toLocaleString().slice(0, 10)
+  },
+  time:{
+    type: DataTypes.STRING,
   }
 }, {
   timestamps: false

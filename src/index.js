@@ -13,10 +13,10 @@ const domain = process.env.DOMAIN
 app.use(cors())
 app.use(express.json())
 
-app.get('/', TaskController.getAllTasks)
-app.post('/', TaskController.createTask)
-app.delete('/', TaskController.deleteTask)
-app.put('/', TaskController.updateTask)
+app.get('/', checkAuth, TaskController.getAllTasks)
+app.post('/', checkAuth, TaskController.createTask)
+app.delete('/', checkAuth, TaskController.deleteTask)
+app.put('/', checkAuth, TaskController.updateTask)
 
 app.post('/signup', registerValidations, handleValidationErrors, UserController.register)
 app.post('/login', loginValidations, handleValidationErrors, UserController.login)
