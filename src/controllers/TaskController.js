@@ -12,11 +12,11 @@ export const getAllTasks = async (req, res) => {
 
             case 'All':
                 tasks.tasks = await TaskModel.findAll({
-                    where:{userId: req.id},
+                    where: { userId: req.id },
                     offset: (req.query.currentPage - 1) * pageSize,
                     limit: 7
                 })
-                tasks.totalTasks = (await TaskModel.findAll({where:{userId: req.id},})).length
+                tasks.totalTasks = (await TaskModel.findAll({ where: { userId: req.id }, })).length
 
                 break
 
@@ -128,7 +128,7 @@ export const createTask = async (req, res) => {
             name: req.body.name,
             userId: req.id,
             date: new Date().toLocaleDateString(),
-            time: new Date().toLocaleTimeString()
+            time: new Date().toLocaleTimeString().substr(0, 5)
         })
         res.status(201).json(newTask)
     } catch (err) {
