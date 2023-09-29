@@ -108,3 +108,51 @@ export const uploadAvatar = async (req, res) => {
     });
   }
 };
+
+export const updateMe = async (req, res) => {
+  try {
+    switch (req.body.updateType) {
+      case "updateLogin":
+        await UserModel.update(
+          {
+            login: req.body.text,
+          },
+          {
+            where: {
+              id: req.id,
+            },
+          }
+        );
+        break;
+      case "updateEmail":
+        await UserModel.update(
+          {
+            email: req.body.text,
+          },
+          {
+            where: {
+              id: req.id,
+            },
+          }
+        );
+        break;
+      default:
+        await UserModel.update(
+          {
+            email: req.body.text,
+          },
+          {
+            where: {
+              id: req.id,
+            },
+          }
+        );
+    }
+
+    res.json("success");
+  } catch (err) {
+    return res.status(404).json({
+      message: "user not found",
+    });
+  }
+};

@@ -38,7 +38,9 @@ app.post(
   handleValidationErrors,
   UserController.login
 );
+
 app.get("/me", checkAuth, UserController.me);
+app.post("/me", checkAuth, UserController.updateMe);
 
 app.post(
   "/uploads",
