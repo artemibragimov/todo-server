@@ -1,10 +1,11 @@
-import { UserModel } from '../../models/UserModel.js';
+import { UserModel } from '../models/UserModel.js';
+import { env } from '../utils/helper.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 export const register = async (req, res) => {
   try {
-    const salt = await bcrypt.genSalt(parseInt(process.env.SALT));
+    const salt = await bcrypt.genSalt(parseInt(env.SALT));
     const passwordHash = await bcrypt.hash(req.body.password, salt);
 
     const user = await UserModel.create({
@@ -13,7 +14,7 @@ export const register = async (req, res) => {
       password: passwordHash,
     });
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, env.SECRET_KEY, {
       expiresIn: '30d',
     });
 
@@ -47,7 +48,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
+    const token = jwt.sign({ id: user.id }, env.SECRET_KEY, {
       expiresIn: '30d',
     });
 
@@ -87,9 +88,9 @@ export const uploadAvatar = async (req, res) => {
     await UserModel.update(
       {
         imageUrl:
-          process.env.DOMAIN +
+          env.DOMAIN +
           ':' +
-          process.env.PORT3001 +
+          env.PORT3001 +
           '/auth/uploads/' +
           req.file.originalname,
       },
@@ -152,7 +153,7 @@ export const editEmail = async (req, res) => {
 
 export const editPassword = async (req, res) => {
   try {
-    const salt = await bcrypt.genSalt(parseInt(process.env.SALT));
+    const salt = await bcrypt.genSalt(parseInt(env.SALT));
     const passwordHash = await bcrypt.hash(req.body.text, salt);
     await UserModel.update(
       {

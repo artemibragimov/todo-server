@@ -1,13 +1,13 @@
 import express, { Router } from 'express';
-import checkAuth from '../utils/checkAuth.js';
+import checkAuth from '../middlewares/checkAuth.js';
 import {
   editEmailValidations,
   editLoginValidations,
   editPasswordValidations,
   loginValidations,
   registerValidations,
-} from '../validations/validations.js';
-import handleValidationErrors from '../utils/handleValidationErrors.js';
+} from '../middlewares/validations.js';
+import handleValidationErrors from '../middlewares/handleValidationErrors.js';
 import { UserController } from '../controllers/index.js';
 import multer from 'multer';
 

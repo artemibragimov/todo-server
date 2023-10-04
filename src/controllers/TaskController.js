@@ -1,8 +1,9 @@
-import { TaskModel } from '../../models/TaskModel.js';
+import { TaskModel } from '../models/TaskModel.js';
+import { pageSize } from '../config/general.config.js';
+import { TaskServices } from '../services/index.js';
 
 export const getAllTasks = async (req, res) => {
   try {
-    const pageSize = 7;
     let tasks = {
       tasks: [],
       totalTasks: null,
@@ -126,81 +127,40 @@ export const getAllTasks = async (req, res) => {
   }
 };
 
-export const createTask = async (req, res) => {
+export const createTask = async (req, res, next) => {
   try {
-    const newTask = await TaskModel.create({
-      name: req.body.name,
-      userId: req.id,
-      date: new Date().toLocaleDateString(),
-      time: new Date().toLocaleTimeString().substr(0, 5),
-    });
-    res.status(201).json(newTask);
-  } catch (err) {
-    res.status(500).json({
-      message: 'Failed to create task',
-    });
-  }
-};
-
-export const deleteTask = async (req, res) => {
-  try {
-    await TaskModel.destroy({
-      where: {
-        id: req.body.id,
+    res.status(201).json(
+      await TaskServices.createTask({
         userId: req.id,
-      },
-    });
-
-    res.json({
-      message: 'task deleted',
-    });
+        name: req.body.name,
+      })
+    );
   } catch (err) {
-    res.status(500).json({
-      message: 'Failed to delete task',
-    });
+    next(err);
   }
 };
 
-export const updateTask = async (req, res) => {
+export const deleteTask = async (req, res, next) => {
   try {
-    if (req.body.name) {
-      await TaskModel.update(
-        {
-          name: req.body.name,
-        },
-        {
-          where: {
-            id: req.body.id,
-            userId: req.id,
-          },
-        }
-      );
-    } else {
-      const task = await TaskModel.findOne({
-        where: {
-          id: req.body.id,
-          userId: req.id,
-        },
-      });
-      await TaskModel.update(
-        {
-          isDone: !task.isDone,
-        },
-        {
-          where: {
-            id: req.body.id,
-            userId: req.id,
-          },
-        }
-      );
-    }
-
-    res.json({
-      message: 'task updated',
-    });
+    res.json(
+      await TaskServices.deleteTask({ id: req.body.id, userId: req.id })
+    );
   } catch (err) {
-    res.status(500).json({
-      message: 'Failed to update task',
-    });
+    next(err);
+  }
+};
+
+export const updateTask = async (req, res, next) => {
+  try {
+    res.json(
+      await TaskServices.updateTask({
+        userId: req.id,
+        id: req.body.id,
+        name: req.body.name,
+        isDone: req.body.isDone,
+      })
+    );
+  } catch (err) {
+    next(err);
   }
 };
