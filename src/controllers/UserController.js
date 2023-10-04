@@ -1,6 +1,6 @@
-import { UserModel } from "../../models/UserModel.js";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+import { UserModel } from '../../models/UserModel.js';
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
 
 export const register = async (req, res) => {
   try {
@@ -14,13 +14,13 @@ export const register = async (req, res) => {
     });
 
     const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
-      expiresIn: "30d",
+      expiresIn: '30d',
     });
 
     res.json({ token });
   } catch (err) {
     res.status(500).json({
-      message: "A user with this login or email already exists",
+      message: 'A user with this login or email already exists',
     });
   }
 };
@@ -35,7 +35,7 @@ export const login = async (req, res) => {
 
     if (!user) {
       return res.status(400).json({
-        message: "Invalid email or password",
+        message: 'Invalid email or password',
       });
     }
 
@@ -43,18 +43,18 @@ export const login = async (req, res) => {
 
     if (!isValidPass) {
       return res.status(400).json({
-        message: "Invalid email or password",
+        message: 'Invalid email or password',
       });
     }
 
     const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY, {
-      expiresIn: "30d",
+      expiresIn: '30d',
     });
 
     res.json({ token });
   } catch (err) {
     res.status(500).json({
-      message: "Invalid email or password",
+      message: 'Invalid email or password',
     });
   }
 };
@@ -77,7 +77,7 @@ export const me = async (req, res) => {
     });
   } catch (err) {
     return res.status(404).json({
-      message: "user not found",
+      message: 'user not found',
     });
   }
 };
@@ -88,9 +88,9 @@ export const uploadAvatar = async (req, res) => {
       {
         imageUrl:
           process.env.DOMAIN +
-          ":" +
+          ':' +
           process.env.PORT3001 +
-          "/auth/uploads/" +
+          '/auth/uploads/' +
           req.file.originalname,
       },
       {
@@ -100,58 +100,75 @@ export const uploadAvatar = async (req, res) => {
       }
     );
 
-    res.json("success");
+    res.json('success');
   } catch (err) {
     return res.status(404).json({
-      message: "user not found",
+      message: 'user not found',
     });
   }
 };
 
-export const updateMe = async (req, res) => {
+export const editLogin = async (req, res) => {
   try {
-    switch (req.body.updateType) {
-      case "updateLogin":
-        await UserModel.update(
-          {
-            login: req.body.text,
-          },
-          {
-            where: {
-              id: req.id,
-            },
-          }
-        );
-        break;
-      case "updateEmail":
-        await UserModel.update(
-          {
-            email: req.body.text,
-          },
-          {
-            where: {
-              id: req.id,
-            },
-          }
-        );
-        break;
-      default:
-        await UserModel.update(
-          {
-            email: req.body.text,
-          },
-          {
-            where: {
-              id: req.id,
-            },
-          }
-        );
-    }
+    await UserModel.update(
+      {
+        login: req.body.login,
+      },
+      {
+        where: {
+          id: req.id,
+        },
+      }
+    );
 
-    res.json("success");
+    res.json('success');
   } catch (err) {
     return res.status(404).json({
-      message: "user not found",
+      message: 'Not found',
+    });
+  }
+};
+
+export const editEmail = async (req, res) => {
+  try {
+    await UserModel.update(
+      {
+        email: req.body.email,
+      },
+      {
+        where: {
+          id: req.id,
+        },
+      }
+    );
+
+    res.json('success');
+  } catch (err) {
+    return res.status(404).json({
+      message: 'Not found',
+    });
+  }
+};
+
+export const editPassword = async (req, res) => {
+  try {
+    const salt = await bcrypt.genSalt(parseInt(process.env.SALT));
+    const passwordHash = await bcrypt.hash(req.body.text, salt);
+    await UserModel.update(
+      {
+        password: passwordHash,
+      },
+      {
+        where: {
+          id: req.id,
+        },
+      }
+    );
+
+    res.json('success');
+  } catch (err) {
+    return res.status(404).json({
+      message: 'Not found',
     });
   }
 };

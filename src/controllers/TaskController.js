@@ -1,4 +1,4 @@
-import { TaskModel } from "../../models/TaskModel.js";
+import { TaskModel } from '../../models/TaskModel.js';
 
 export const getAllTasks = async (req, res) => {
   try {
@@ -9,7 +9,7 @@ export const getAllTasks = async (req, res) => {
     };
 
     switch (req.query.filter) {
-      case "All":
+      case 'All':
         tasks.tasks = await TaskModel.findAll({
           where: { userId: req.id },
           offset: (req.query.currentPage - 1) * pageSize,
@@ -21,7 +21,7 @@ export const getAllTasks = async (req, res) => {
 
         break;
 
-      case "Done":
+      case 'Done':
         tasks.tasks = await TaskModel.findAll({
           where: {
             userId: req.id,
@@ -39,7 +39,7 @@ export const getAllTasks = async (req, res) => {
           })
         ).length;
         break;
-      case "Undone":
+      case 'Undone':
         tasks.tasks = await TaskModel.findAll({
           where: {
             userId: req.id,
@@ -57,15 +57,15 @@ export const getAllTasks = async (req, res) => {
           })
         ).length;
         break;
-      case "firstNew":
+      case 'firstNew':
         tasks.tasks = await TaskModel.findAll({
           where: {
             userId: req.id,
           },
           order: [
-            ["date", "DESC"],
-            ["time", "DESC"],
-            ["id", "DESC"],
+            ['date', 'DESC'],
+            ['time', 'DESC'],
+            ['id', 'DESC'],
           ],
           offset: (req.query.currentPage - 1) * pageSize,
           limit: 7,
@@ -78,12 +78,12 @@ export const getAllTasks = async (req, res) => {
           })
         ).length;
         break;
-      case "firstOld":
+      case 'firstOld':
         tasks.tasks = await TaskModel.findAll({
           where: {
             userId: req.id,
           },
-          order: [["date"], ["time"], ["id"]],
+          order: [['date'], ['time'], ['id']],
           offset: (req.query.currentPage - 1) * pageSize,
           limit: 7,
         });
@@ -103,7 +103,7 @@ export const getAllTasks = async (req, res) => {
             date: new Date().toLocaleDateString(),
             userId: req.id,
           },
-          order: [["id"]],
+          order: [['id']],
           offset: (req.query.currentPage - 1) * pageSize,
           limit: 7,
         });
@@ -121,7 +121,7 @@ export const getAllTasks = async (req, res) => {
     res.json(tasks);
   } catch (err) {
     res.status(500).json({
-      message: "Failed to load tasks",
+      message: 'Failed to load tasks',
     });
   }
 };
@@ -137,7 +137,7 @@ export const createTask = async (req, res) => {
     res.status(201).json(newTask);
   } catch (err) {
     res.status(500).json({
-      message: "Failed to create task",
+      message: 'Failed to create task',
     });
   }
 };
@@ -152,11 +152,11 @@ export const deleteTask = async (req, res) => {
     });
 
     res.json({
-      message: "task deleted",
+      message: 'task deleted',
     });
   } catch (err) {
     res.status(500).json({
-      message: "Failed to delete task",
+      message: 'Failed to delete task',
     });
   }
 };
@@ -196,11 +196,11 @@ export const updateTask = async (req, res) => {
     }
 
     res.json({
-      message: "task updated",
+      message: 'task updated',
     });
   } catch (err) {
     res.status(500).json({
-      message: "Failed to update task",
+      message: 'Failed to update task',
     });
   }
 };

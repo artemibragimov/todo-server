@@ -1,22 +1,25 @@
-import express, { Router } from "express";
-import checkAuth from "../utils/checkAuth.js";
+import express, { Router } from 'express';
+import checkAuth from '../utils/checkAuth.js';
 import {
+  editEmailValidations,
+  editLoginValidations,
+  editPasswordValidations,
   loginValidations,
   registerValidations,
-} from "../validations/validations.js";
-import handleValidationErrors from "../utils/handleValidationErrors.js";
-import { UserController } from "../controllers/index.js";
-import multer from "multer";
+} from '../validations/validations.js';
+import handleValidationErrors from '../utils/handleValidationErrors.js';
+import { UserController } from '../controllers/index.js';
+import multer from 'multer';
 
 export const userRoutes = Router();
 
 userRoutes.use(
-  "/uploads",
-  express.static("C:\\CODE\\todo-server\\src\\uploads")
+  '/uploads',
+  express.static('C:\\CODE\\todo-server\\src\\uploads')
 );
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "C:\\CODE\\todo-server\\src\\uploads");
+    cb(null, 'C:\\CODE\\todo-server\\src\\uploads');
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
@@ -25,24 +28,45 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 userRoutes.post(
-  "/uploads",
+  '/uploads',
   checkAuth,
-  upload.single("image"),
+  upload.single('image'),
   UserController.uploadAvatar
 );
 
 userRoutes.post(
-  "/signup",
+  '/signup',
   registerValidations,
   handleValidationErrors,
   UserController.register
 );
 userRoutes.post(
-  "/login",
+  '/login',
   loginValidations,
   handleValidationErrors,
   UserController.login
 );
 
-userRoutes.get("/me", checkAuth, UserController.me);
-userRoutes.post("/me", checkAuth, UserController.updateMe);
+userRoutes.get('/me', checkAuth, UserController.me);
+
+userRoutes.post(
+  '/me/editLogin',
+  checkAuth,
+  editLoginValidations,
+  handleValidationErrors,
+  UserController.editLogin
+);
+userRoutes.post(
+  '/me/editEmail',
+  checkAuth,
+  editEmailValidations,
+  handleValidationErrors,
+  UserController.editEmail
+);
+userRoutes.post(
+  '/me/editPassword',
+  checkAuth,
+  editPasswordValidations,
+  handleValidationErrors,
+  UserController.editPassword
+);

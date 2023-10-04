@@ -7,22 +7,22 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       name: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       isDone: Sequelize.BOOLEAN,
       userId: {
         type: Sequelize.INTEGER,
-        allowNull: false
+        allowNull: false,
       },
-      date:  Sequelize.STRING,
+      date: Sequelize.STRING,
       time: Sequelize.STRING,
     });
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Tasks');
-  }
+  },
 };

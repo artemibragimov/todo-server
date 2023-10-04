@@ -1,8 +1,8 @@
-import { DataTypes } from "sequelize";
-import { sequelize } from "./sequelize.js";
+import { DataTypes } from 'sequelize';
+import { sequelize } from './sequelize.js';
 
 export const UserModel = sequelize.define(
-  "User",
+  'User',
   {
     login: {
       type: DataTypes.BOOLEAN,
