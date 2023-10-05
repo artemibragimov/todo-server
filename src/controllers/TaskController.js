@@ -1,129 +1,39 @@
-import { TaskModel } from '../models/TaskModel.js';
-import { pageSize } from '../config/general.config.js';
 import { TaskServices } from '../services/index.js';
 
-export const getAllTasks = async (req, res) => {
+export const getAllTasks = async (req, res, next) => {
   try {
-    let tasks = {
-      tasks: [],
-      totalTasks: null,
-    };
-
-    switch (req.query.filter) {
-      case 'All':
-        tasks.tasks = await TaskModel.findAll({
-          where: { userId: req.id },
-          offset: (req.query.currentPage - 1) * pageSize,
-          limit: 7,
-        });
-        tasks.totalTasks = (
-          await TaskModel.findAll({ where: { userId: req.id } })
-        ).length;
-
-        break;
-
-      case 'Done':
-        tasks.tasks = await TaskModel.findAll({
-          where: {
-            userId: req.id,
-            isDone: true,
-          },
-          offset: (req.query.currentPage - 1) * pageSize,
-          limit: 7,
-        });
-        tasks.totalTasks = (
-          await TaskModel.findAll({
-            where: {
-              userId: req.id,
-              isDone: true,
-            },
-          })
-        ).length;
-        break;
-      case 'Undone':
-        tasks.tasks = await TaskModel.findAll({
-          where: {
-            userId: req.id,
-            isDone: false,
-          },
-          offset: (req.query.currentPage - 1) * pageSize,
-          limit: 7,
-        });
-        tasks.totalTasks = (
-          await TaskModel.findAll({
-            where: {
-              userId: req.id,
-              isDone: false,
-            },
-          })
-        ).length;
-        break;
-      case 'firstNew':
-        tasks.tasks = await TaskModel.findAll({
-          where: {
-            userId: req.id,
-          },
+    const defineFilter = (filter) => {
+      const filters = {
+        Done: { where: { isDone: true } },
+        Undone: { where: { isDone: false } },
+        firstOld: {
           order: [
             ['date', 'DESC'],
             ['time', 'DESC'],
-            ['id', 'DESC'],
           ],
-          offset: (req.query.currentPage - 1) * pageSize,
-          limit: 7,
-        });
-        tasks.totalTasks = (
-          await TaskModel.findAll({
-            where: {
-              userId: req.id,
-            },
-          })
-        ).length;
-        break;
-      case 'firstOld':
-        tasks.tasks = await TaskModel.findAll({
-          where: {
-            userId: req.id,
-          },
-          order: [['date'], ['time'], ['id']],
-          offset: (req.query.currentPage - 1) * pageSize,
-          limit: 7,
-        });
-        tasks.totalTasks = (
-          await TaskModel.findAll({
-            where: {
-              userId: req.id,
-            },
-          })
-        ).length;
+        },
+        Today: {
+          where: { date: new Date().toLocaleDateString() },
+          order: [['time']],
+        },
+      };
 
-        break;
+      return (
+        filters[filter] ?? {
+          order: [['date'], ['time']],
+        }
+      );
+    };
 
-      default:
-        tasks.tasks = await TaskModel.findAll({
-          where: {
-            date: new Date().toLocaleDateString(),
-            userId: req.id,
-          },
-          order: [['id']],
-          offset: (req.query.currentPage - 1) * pageSize,
-          limit: 7,
-        });
-
-        tasks.totalTasks = (
-          await TaskModel.findAll({
-            where: {
-              date: new Date().toLocaleString().slice(0, 10),
-              userId: req.id,
-            },
-          })
-        ).length;
-    }
-
-    res.json(tasks);
+    res.json(
+      await TaskServices.getTasks({
+        userId: req.id,
+        currentPage: req.query.currentPage,
+        filter: defineFilter(req.query.filter),
+      })
+    );
   } catch (err) {
-    res.status(500).json({
-      message: 'Failed to load tasks',
-    });
+    next(err);
   }
 };
 

@@ -1,4 +1,25 @@
 import { TaskModel } from '../models/TaskModel.js';
+import { pageSize } from '../config/general.config.js';
+
+export const getTasks = async (data) => {
+  const tasks = await TaskModel.findAll({
+    where: data.filter.where,
+    order: data.filter.order,
+    offset: (data.currentPage - 1) * pageSize,
+    limit: pageSize,
+  });
+
+  const totalTasks = (
+    await TaskModel.findAll({
+      where: data.filter.where,
+    })
+  ).length;
+
+  return {
+    tasks,
+    totalTasks,
+  };
+};
 
 export const createTask = async (data) => {
   const newTask = await TaskModel.create({
