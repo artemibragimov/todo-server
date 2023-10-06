@@ -1,14 +1,17 @@
 export class ApiError extends Error {
   status;
-  errors;
 
   constructor(status, message) {
     super(message);
     this.status = status;
   }
 
-  static UnauthorizedError() {
+  static UnauthorizedAccessError() {
     return new ApiError(401, 'User is not authorized');
+  }
+
+  static UnauthorizedRefreshError() {
+    return new ApiError(403, 'User is not authorized');
   }
 
   static BadRequest(message) {

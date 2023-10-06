@@ -7,6 +7,7 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false,
         unique: true,
+        primaryKey: true,
       },
       refreshToken: {
         type: Sequelize.STRING,

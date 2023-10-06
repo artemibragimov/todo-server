@@ -8,6 +8,7 @@ export const TokenModel = sequelize.define(
       type: DataTypes.UUID,
       allowNull: false,
       unique: true,
+      primaryKey: true,
     },
     refreshToken: {
       type: DataTypes.STRING,

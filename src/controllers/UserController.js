@@ -39,7 +39,7 @@ export const login = async (req, res, next) => {
   }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
     await TokenServices.removeToken(refreshToken);
@@ -47,60 +47,34 @@ export const logout = async (req, res) => {
     res.clearCookie('refreshToken');
     res.status(200).json({ message: 'logout' });
   } catch (err) {
-    res.status(500).json({
-      message: 'no logout',
-    });
+    next(err);
   }
 };
 
-export const refresh = async (req, res) => {
+export const refresh = async (req, res, next) => {
   try {
     const { refreshToken } = req.cookies;
-    const token = TokenServices.validateRefreshToken(refreshToken);
-    const tokenFromDb = TokenServices.findToken(refreshToken);
-    if (!token || !tokenFromDb) {
-      res.status(404).json({ message: 'no verify token' });
-    }
-
-    const tokens = await TokenServices.generateToken({ id: req.id });
-    await TokenServices.saveToken(req.id, tokens.refreshToken);
-
+    const tokens = await TokenServices.refresh({
+      refreshToken: refreshToken,
+    });
     res.cookie('refreshToken', tokens.refreshToken, {
       maxAge: 30 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
-
-    return res.json({ ...tokens });
+    return res.json(tokens.accessToken);
   } catch (err) {
-    res.status(500).json({
-      message: 'no refresh',
-    });
+    next(err);
   }
 };
 
-export const me = async (req, res) => {
+export const me = async (req, res, next) => {
   try {
-    const user = await UserModel.findOne({
-      where: {
-        id: req.id,
-      },
-    });
-
-    const { login, email, createdAt, imageUrl, ...userData } = user;
-
-    res.json({
-      login: login,
-      email: email,
-      imageUrl: imageUrl,
-      createdAt: createdAt,
-    });
+    res.json(await UserServices.me({ id: req.id }));
   } catch (err) {
-    return res.status(404).json({
-      message: 'user not found',
-    });
+    next(err);
   }
 };
-
+///-----------------------------------------------------
 export const uploadAvatar = async (req, res) => {
   try {
     await UserModel.update(

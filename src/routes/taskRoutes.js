@@ -5,7 +5,7 @@ export const taskRoutes = Router();
 
 taskRoutes
   .route('/')
-  .get(TaskController.getAllTasks)
+  .get(TaskController.getTasks)
   .post(TaskController.createTask)
   .put(TaskController.updateTask)
   .delete(TaskController.deleteTask);

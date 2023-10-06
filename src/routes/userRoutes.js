@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import checkAuth from '../middlewares/checkAuth.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
 import {
   editEmailValidations,
   editLoginValidations,
@@ -17,6 +17,7 @@ userRoutes.use(
   '/uploads',
   express.static('C:\\CODE\\todo-server\\src\\uploads')
 );
+
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'C:\\CODE\\todo-server\\src\\uploads');
@@ -29,7 +30,7 @@ const upload = multer({ storage: storage });
 
 userRoutes.post(
   '/uploads',
-  checkAuth,
+  authMiddleware,
   upload.single('image'),
   UserController.uploadAvatar
 );
@@ -46,26 +47,27 @@ userRoutes.post(
   handleValidationErrors,
   UserController.login
 );
-
-userRoutes.get('/me', checkAuth, UserController.me);
+userRoutes.post('/logout', UserController.logout);
+userRoutes.get('/refresh', UserController.refresh);
+userRoutes.get('/me', authMiddleware, UserController.me);
 
 userRoutes.post(
   '/me/editLogin',
-  checkAuth,
+  authMiddleware,
   editLoginValidations,
   handleValidationErrors,
   UserController.editLogin
 );
 userRoutes.post(
   '/me/editEmail',
-  checkAuth,
+  authMiddleware,
   editEmailValidations,
   handleValidationErrors,
   UserController.editEmail
 );
 userRoutes.post(
   '/me/editPassword',
-  checkAuth,
+  authMiddleware,
   editPasswordValidations,
   handleValidationErrors,
   UserController.editPassword

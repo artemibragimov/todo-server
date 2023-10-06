@@ -34,24 +34,35 @@ export const register = async (data) => {
 export const login = async (data) => {
   const user = await UserModel.findOne({
     where: {
-      login: req.body.login,
+      login: data.login,
     },
   });
 
-  if (!user) {
-    return res.status(400).json({
-      message: 'Invalid email or password',
-    });
-  }
+  const isValidPass = await bcrypt.compare(data.password, user.password);
 
-  const isValidPass = await bcrypt.compare(req.body.password, user.password);
-
-  if (!isValidPass) {
-    return res.status(400).json({
-      message: 'Invalid email or password',
-    });
+  if (!user || !isValidPass) {
+    throw ApiError.BadRequest('Invalid email or password');
   }
 
   const tokens = await TokenServices.generateToken({ id: user.id });
   await TokenServices.saveToken(user.id, tokens.refreshToken);
+
+  return tokens;
+};
+
+export const me = async (data) => {
+  const user = await UserModel.findOne({
+    where: {
+      id: data.id,
+    },
+  });
+
+  const { login, email, createdAt, imageUrl, ...userData } = user;
+
+  return {
+    login: login,
+    email: email,
+    imageUrl: imageUrl,
+    createdAt: createdAt,
+  };
 };

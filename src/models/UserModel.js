@@ -4,6 +4,12 @@ import { sequelize } from '../services/db.services.js';
 export const UserModel = sequelize.define(
   'User',
   {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      allowNull: false,
+      primaryKey: true,
+    },
     login: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
