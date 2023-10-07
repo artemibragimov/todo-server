@@ -57,12 +57,10 @@ export const me = async (data) => {
     },
   });
 
-  const { login, email, createdAt, imageUrl, ...userData } = user;
-
   return {
-    login: login,
-    email: email,
-    imageUrl: imageUrl,
-    createdAt: createdAt,
+    login: user.login,
+    email: user.email,
+    imageUrl: user.imageUrl,
+    createdAt: user.createdAt,
   };
 };

@@ -3,20 +3,21 @@ export const defineFilter = (filter) => {
     Done: { where: { isDone: true } },
     Undone: { where: { isDone: false } },
     firstOld: {
-      order: [
-        ['date', 'DESC'],
-        ['time', 'DESC'],
-      ],
+      order: [['date'], ['time'], ['id']],
     },
     Today: {
       where: { date: new Date().toLocaleDateString() },
-      order: [['time']],
+      order: [['time'], ['id']],
     },
   };
 
   return (
     filters[filter] ?? {
-      order: [['date'], ['time']],
+      order: [
+        ['date', 'DESC'],
+        ['time', 'DESC'],
+        ['id', 'DESC'],
+      ],
     }
   );
 };
