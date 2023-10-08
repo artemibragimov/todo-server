@@ -1,3 +1,3 @@
-export * as TaskServices from './TaskServices.js';
-export * as TokenServices from './TokenServices.js';
-export * as UserServices from './UserServices.js';
+export * as TaskServices from './task.services.js';
+export * as TokenServices from './token.services.js';
+export * as UserServices from './user.services.js';

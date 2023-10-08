@@ -83,7 +83,7 @@ export const uploadAvatar = async (req, res) => {
           env.DOMAIN +
           ':' +
           env.PORT3001 +
-          '/auth/uploads/' +
+          '/auth/me/uploads/' +
           req.file.originalname,
       },
       {

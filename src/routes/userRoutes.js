@@ -9,31 +9,12 @@ import {
 } from '../utils/validations.js';
 import handleValidationErrors from '../middlewares/handleValidationErrors.js';
 import { UserController } from '../controllers/index.js';
-import multer from 'multer';
+import { env } from '../utils/helper.js';
+import { upload } from '../services/upload.services.js';
 
 export const userRoutes = Router();
 
-userRoutes.use(
-  '/uploads',
-  express.static('C:\\CODE\\todo-server\\src\\uploads')
-);
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'C:\\CODE\\todo-server\\src\\uploads');
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
-
-userRoutes.post(
-  '/uploads',
-  authMiddleware,
-  upload.single('image'),
-  UserController.uploadAvatar
-);
+userRoutes.use('/me/uploads', express.static(env.UPLOAD_MULTER));
 
 userRoutes.post(
   '/signup',
@@ -50,6 +31,13 @@ userRoutes.post(
 userRoutes.post('/logout', UserController.logout);
 userRoutes.get('/refresh', UserController.refresh);
 userRoutes.get('/me', authMiddleware, UserController.me);
+
+userRoutes.post(
+  '/me/uploads',
+  authMiddleware,
+  upload.single('image'),
+  UserController.uploadAvatar
+);
 
 userRoutes.post(
   '/me/editLogin',
