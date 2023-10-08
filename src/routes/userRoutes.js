@@ -6,7 +6,7 @@ import {
   editPasswordValidations,
   loginValidations,
   registerValidations,
-} from '../middlewares/validations.js';
+} from '../utils/validations.js';
 import handleValidationErrors from '../middlewares/handleValidationErrors.js';
 import { UserController } from '../controllers/index.js';
 import multer from 'multer';

@@ -5,17 +5,6 @@ import { TokenServices } from './index.js';
 import { ApiError } from '../utils/apiError.js';
 
 export const register = async (data) => {
-  const findUser = await UserModel.findOne({
-    where: {
-      login: data.login,
-      email: data.email,
-    },
-  });
-
-  if (findUser) {
-    throw ApiError.BadRequest('User with this login or email already exists');
-  }
-
   const salt = await bcrypt.genSalt(parseInt(env.SALT));
   const passwordHash = await bcrypt.hash(data.password, salt);
 
