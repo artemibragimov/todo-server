@@ -2,7 +2,7 @@ import { body } from 'express-validator';
 import { UserModel } from '../models/UserModel.js';
 
 export const registerValidations = [
-  //валидация данных для регистрации
+  //verification of registration data
   body('login')
     .isLength({ min: 5 })
     .withMessage('The login must consist of at least 5 characters')
@@ -43,7 +43,7 @@ export const registerValidations = [
 ];
 
 export const loginValidations = [
-  //валидация данных для авторизации
+  //verification of login data
   body('login')
     .isLength({ min: 5 })
     .withMessage('The login must consist of at least 5 characters')
