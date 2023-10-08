@@ -46,18 +46,7 @@ export const loginValidations = [
   //verification of login data
   body('login')
     .isLength({ min: 5 })
-    .withMessage('The login must consist of at least 5 characters')
-    .custom(async (login) => {
-      const user = await UserModel.findOne({
-        where: {
-          login: login,
-        },
-      });
-
-      if (!user) {
-        throw Error('Login is not registered');
-      }
-    }),
+    .withMessage('The login must consist of at least 5 characters'),
   body('password')
     .isLength({ min: 6 })
     .withMessage('The password must consist of at least 6 characters'),
