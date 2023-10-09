@@ -1,5 +1,6 @@
 import { env } from '../utils/helper.js';
 import { TokenServices, UserServices } from '../services/index.js';
+import bcrypt from 'bcrypt';
 
 export const register = async (req, res, next) => {
   try {
@@ -83,6 +84,10 @@ export const updateMe = async (req, res, next) => {
     }
     if (req.body.email) {
       data.updateData.email = req.body.email;
+    }
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(parseInt(env.SALT));
+      data.updateData.password = await bcrypt.hash(req.body.password, salt);
     }
     if (req.file) {
       data.updateData.imageUrl =

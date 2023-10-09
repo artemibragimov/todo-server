@@ -26,10 +26,12 @@ export const login = async (data) => {
       login: data.login,
     },
   });
-  console.log(user);
+  if (!user) {
+    throw ApiError.BadRequest('Invalid email or password');
+  }
   const isValidPass = await bcrypt.compare(data.password, user.password);
 
-  if (!user || !isValidPass) {
+  if (!isValidPass) {
     throw ApiError.BadRequest('Invalid email or password');
   }
 
