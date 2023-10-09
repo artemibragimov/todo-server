@@ -26,7 +26,7 @@ export const login = async (data) => {
       login: data.login,
     },
   });
-
+  console.log(user);
   const isValidPass = await bcrypt.compare(data.password, user.password);
 
   if (!user || !isValidPass) {
@@ -39,7 +39,7 @@ export const login = async (data) => {
   return tokens;
 };
 
-export const me = async (data) => {
+export const getMe = async (data) => {
   const user = await UserModel.findOne({
     where: {
       id: data.id,
@@ -51,5 +51,34 @@ export const me = async (data) => {
     email: user.email,
     imageUrl: user.imageUrl,
     createdAt: user.createdAt,
+  };
+};
+
+export const editPassword = async (data) => {
+  const salt = await bcrypt.genSalt(parseInt(env.SALT));
+  const passwordHash = await bcrypt.hash(data.newPassword, salt);
+  await UserModel.update(
+    {
+      password: passwordHash,
+    },
+    {
+      where: {
+        id: data.id,
+      },
+    }
+  );
+
+  return 'success';
+};
+
+export const updateMe = async (data) => {
+  await UserModel.update(data.updateData, {
+    where: {
+      id: data.id,
+    },
+  });
+
+  return {
+    message: 'user data has been updated',
   };
 };

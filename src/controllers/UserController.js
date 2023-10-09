@@ -1,6 +1,4 @@
-import { UserModel } from '../models/UserModel.js';
 import { env } from '../utils/helper.js';
-import bcrypt from 'bcrypt';
 import { TokenServices, UserServices } from '../services/index.js';
 
 export const register = async (req, res, next) => {
@@ -24,6 +22,7 @@ export const register = async (req, res, next) => {
 
 export const login = async (req, res, next) => {
   try {
+    console.log(req.body.password);
     const tokens = await UserServices.login({
       login: req.body.login,
       password: req.body.password,
@@ -67,101 +66,48 @@ export const refresh = async (req, res, next) => {
   }
 };
 
-export const me = async (req, res, next) => {
+export const getMe = async (req, res, next) => {
   try {
-    res.json(await UserServices.me({ id: req.id }));
+    res.json(await UserServices.getMe({ id: req.id }));
   } catch (err) {
     next(err);
   }
 };
-///-----------------------------------------------------
-export const uploadAvatar = async (req, res) => {
-  try {
-    await UserModel.update(
-      {
-        imageUrl:
-          env.DOMAIN +
-          ':' +
-          env.PORT3001 +
-          '/auth/me/uploads/' +
-          req.file.originalname,
-      },
-      {
-        where: {
-          id: req.id,
-        },
-      }
-    );
 
-    res.json('success');
+export const updateMe = async (req, res, next) => {
+  try {
+    const data = { updateData: {} };
+    data.id = req.id;
+    if (req.body.login) {
+      data.updateData.login = req.body.login;
+    }
+    if (req.body.email) {
+      data.updateData.email = req.body.email;
+    }
+    if (req.file) {
+      data.updateData.imageUrl =
+        env.DOMAIN +
+        ':' +
+        env.PORT3001 +
+        '/auth/me/uploads/' +
+        req.file.originalname;
+    }
+
+    res.json(await UserServices.updateMe(data));
   } catch (err) {
-    return res.status(404).json({
-      message: 'user not found',
-    });
+    next(err);
   }
 };
 
-export const editLogin = async (req, res) => {
+export const editPassword = async (req, res, next) => {
   try {
-    await UserModel.update(
-      {
-        login: req.body.login,
-      },
-      {
-        where: {
-          id: req.id,
-        },
-      }
+    res.json(
+      await UserServices.editPassword({
+        id: req.id,
+        newPassword: req.body.text,
+      })
     );
-
-    res.json('success');
   } catch (err) {
-    return res.status(404).json({
-      message: 'Not found',
-    });
-  }
-};
-
-export const editEmail = async (req, res) => {
-  try {
-    await UserModel.update(
-      {
-        email: req.body.email,
-      },
-      {
-        where: {
-          id: req.id,
-        },
-      }
-    );
-
-    res.json('success');
-  } catch (err) {
-    return res.status(404).json({
-      message: 'Not found',
-    });
-  }
-};
-
-export const editPassword = async (req, res) => {
-  try {
-    const salt = await bcrypt.genSalt(parseInt(env.SALT));
-    const passwordHash = await bcrypt.hash(req.body.text, salt);
-    await UserModel.update(
-      {
-        password: passwordHash,
-      },
-      {
-        where: {
-          id: req.id,
-        },
-      }
-    );
-
-    res.json('success');
-  } catch (err) {
-    return res.status(404).json({
-      message: 'Not found',
-    });
+    next(err);
   }
 };

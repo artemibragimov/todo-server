@@ -5,7 +5,7 @@ import { ApiError } from '../utils/apiError.js';
 
 export const generateToken = async (payload) => {
   const accessToken = jwt.sign(payload, env.ACCESS_SECRET_KEY, {
-    expiresIn: '20m',
+    expiresIn: '2h',
   });
 
   const refreshToken = jwt.sign(payload, env.REFRESH_SECRET_KEY, {

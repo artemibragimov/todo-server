@@ -1,11 +1,10 @@
 import express, { Router } from 'express';
 import authMiddleware from '../middlewares/authMiddleware.js';
 import {
-  editEmailValidations,
-  editLoginValidations,
   editPasswordValidations,
   loginValidations,
   registerValidations,
+  updateMeValidations,
 } from '../utils/validations.js';
 import handleValidationErrors from '../middlewares/handleValidationErrors.js';
 import { UserController } from '../controllers/index.js';
@@ -30,29 +29,18 @@ userRoutes.post(
 );
 userRoutes.post('/logout', UserController.logout);
 userRoutes.get('/refresh', UserController.refresh);
-userRoutes.get('/me', authMiddleware, UserController.me);
 
-userRoutes.post(
-  '/me/uploads',
-  authMiddleware,
-  upload.single('image'),
-  UserController.uploadAvatar
-);
+userRoutes
+  .route('/me')
+  .get(authMiddleware, UserController.getMe)
+  .put(
+    authMiddleware,
+    upload.single('image'),
+    updateMeValidations,
+    handleValidationErrors,
+    UserController.updateMe
+  );
 
-userRoutes.post(
-  '/me/editLogin',
-  authMiddleware,
-  editLoginValidations,
-  handleValidationErrors,
-  UserController.editLogin
-);
-userRoutes.post(
-  '/me/editEmail',
-  authMiddleware,
-  editEmailValidations,
-  handleValidationErrors,
-  UserController.editEmail
-);
 userRoutes.post(
   '/me/editPassword',
   authMiddleware,
