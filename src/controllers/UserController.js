@@ -40,7 +40,7 @@ export const editPassword = async (req, res, next) => {
     res.json(
       await UserServices.editPassword({
         id: req.id,
-        newPassword: req.body.text,
+        newPassword: req.body.password,
       })
     );
   } catch (err) {
