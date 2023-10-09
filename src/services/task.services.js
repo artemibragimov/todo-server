@@ -2,6 +2,7 @@ import { TaskModel } from '../models/TaskModel.js';
 import { pageSize } from '../config/general.config.js';
 
 export const getTasks = async (data) => {
+  data.filter.where.userId = data.userId;
   const tasks = await TaskModel.findAll({
     where: data.filter.where,
     order: data.filter.order,

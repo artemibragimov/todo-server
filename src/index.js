@@ -5,6 +5,7 @@ import { routes } from './routes/index.js';
 import { env } from './utils/helper.js';
 import cookieParser from 'cookie-parser';
 import { errorMiddleware } from './middlewares/errorMiddleware.js';
+import { userRoutes } from './routes/userRoutes.js';
 
 const app = express();
 app.use(
@@ -15,6 +16,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use('/uploads', express.static(env.UPLOAD_MULTER));
 
 app.use('/', routes);
 

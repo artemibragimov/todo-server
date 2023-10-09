@@ -1,9 +1,10 @@
-import { Router } from 'express';
-import { userRoutes } from './userRoutes.js';
+import express, { Router } from 'express';
+import { authRoutes } from './authRoutes.js';
 import { taskRoutes } from './taskRoutes.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
+import { userRoutes } from './userRoutes.js';
 
 export const routes = Router();
-
-routes.use('/auth', userRoutes);
-routes.use('/', authMiddleware, taskRoutes);
+routes.use('/tasks', authMiddleware, taskRoutes);
+routes.use('/auth', authRoutes);
+routes.use('/me', authMiddleware, userRoutes);
