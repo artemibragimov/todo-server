@@ -3,6 +3,7 @@ export const defineFilter = (filter) => {
     Done: { where: { isDone: true } },
     Undone: { where: { isDone: false } },
     firstOld: {
+      where: {},
       order: [['date'], ['time'], ['id']],
     },
     Today: {
@@ -13,6 +14,7 @@ export const defineFilter = (filter) => {
 
   return (
     filters[filter] ?? {
+      where: {},
       order: [
         ['date', 'DESC'],
         ['time', 'DESC'],
