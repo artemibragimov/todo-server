@@ -26,14 +26,11 @@ export const login = async (data) => {
       login: data.login,
     },
   });
-  if (!user) {
-    throw ApiError.BadRequest('Invalid login or password');
-  }
+  if (!user) throw ApiError.BadRequest('Invalid login or password');
+
   const isValidPass = await bcrypt.compare(data.password, user.password);
 
-  if (!isValidPass) {
-    throw ApiError.BadRequest('Invalid login or password');
-  }
+  if (!isValidPass) throw ApiError.BadRequest('Invalid login or password');
 
   const tokens = await TokenServices.generateToken({ id: user.id });
   await TokenServices.saveToken(user.id, tokens.refreshToken);

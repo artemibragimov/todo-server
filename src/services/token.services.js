@@ -79,9 +79,7 @@ export const validateAccessToken = (accessToken) => {
 export const refresh = async (data) => {
   const token = validateRefreshToken(data.refreshToken);
   const tokenFromDb = findToken(data.refreshToken);
-  if (!token || !tokenFromDb) {
-    throw ApiError.UnauthorizedAccessError();
-  }
+  if (!token || !tokenFromDb) throw ApiError.UnauthorizedAccessError();
 
   const tokens = await generateToken({ id: token.id });
   await saveToken(token.id, tokens.refreshToken);

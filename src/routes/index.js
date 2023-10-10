@@ -1,4 +1,4 @@
-import express, { Router } from 'express';
+import { Router } from 'express';
 import { authRoutes } from './authRoutes.js';
 import { taskRoutes } from './taskRoutes.js';
 import authMiddleware from '../middlewares/authMiddleware.js';
