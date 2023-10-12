@@ -84,9 +84,16 @@ export const updateMeValidations = [
     }),
 ];
 
-export const editPasswordValidations = [
-  body(
-    'password',
-    'The password must consist of at least 6 characters'
-  ).isLength({ min: 6 }),
+export const updatePasswordValidations = [
+  body('password')
+    .isLength({ min: 6 })
+    .withMessage('The password must consist of at least 6 characters'),
+
+  body('passwordConfirmation').custom((passwordConfirmation, { req }) => {
+    if (passwordConfirmation !== req.body.password) {
+      throw new Error('Password confirmation does not match password');
+    } else {
+      return true;
+    }
+  }),
 ];

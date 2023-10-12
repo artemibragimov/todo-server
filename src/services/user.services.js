@@ -1,9 +1,9 @@
 import { UserModel } from '../models/UserModel.js';
 
-export const getMe = async (data) => {
+export const getMe = async ({ id }) => {
   const user = await UserModel.findOne({
     where: {
-      id: data.id,
+      id: id,
     },
   });
 
@@ -15,10 +15,10 @@ export const getMe = async (data) => {
   };
 };
 
-export const updateMe = async (data) => {
-  await UserModel.update(data.updateData, {
+export const updateMe = async ({ id, updateData }) => {
+  await UserModel.update(updateData, {
     where: {
-      id: data.id,
+      id: id,
     },
   });
 

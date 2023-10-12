@@ -4,36 +4,42 @@ import { UserModel } from '../models/UserModel.js';
 import { ApiError } from '../utils/apiError.js';
 import * as TokenServices from './token.services.js';
 
-export const register = async (data) => {
+export const register = async ({ login, email, password }) => {
   const salt = await bcrypt.genSalt(parseInt(env.SALT));
-  const passwordHash = await bcrypt.hash(data.password, salt);
+  const passwordHash = await bcrypt.hash(password, salt);
 
   const user = await UserModel.create({
-    login: data.login,
-    email: data.email,
+    login: login,
+    email: email,
     password: passwordHash,
   });
 
   const tokens = await TokenServices.generateToken({ id: user.id });
-  await TokenServices.saveToken(user.id, tokens.refreshToken);
+  await TokenServices.saveToken({
+    userId: user.id,
+    refreshToken: tokens.refreshToken,
+  });
 
   return tokens;
 };
 
-export const login = async (data) => {
+export const login = async ({ login, password }) => {
   const user = await UserModel.findOne({
     where: {
-      login: data.login,
+      login: login,
     },
   });
   if (!user) throw ApiError.BadRequest('Invalid login or password');
 
-  const isValidPass = await bcrypt.compare(data.password, user.password);
+  const isValidPass = await bcrypt.compare(password, user.password);
 
   if (!isValidPass) throw ApiError.BadRequest('Invalid login or password');
 
   const tokens = await TokenServices.generateToken({ id: user.id });
-  await TokenServices.saveToken(user.id, tokens.refreshToken);
+  await TokenServices.saveToken({
+    userId: user.id,
+    refreshToken: tokens.refreshToken,
+  });
 
   return tokens;
 };

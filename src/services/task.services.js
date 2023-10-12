@@ -1,31 +1,26 @@
 import { TaskModel } from '../models/TaskModel.js';
 import { pageSize } from '../config/general.config.js';
 
-export const getTasks = async (data) => {
-  data.filter.where.userId = data.userId;
-  const tasks = await TaskModel.findAll({
-    where: data.filter.where,
-    order: data.filter.order,
-    offset: (data.currentPage - 1) * pageSize,
+export const getTasks = async ({ userId, currentPage, filter }) => {
+  filter.where.userId = userId;
+
+  const tasks = await TaskModel.findAndCountAll({
+    where: filter.where,
+    order: filter.order,
+    offset: (currentPage - 1) * pageSize,
     limit: pageSize,
   });
 
-  const totalTasks = (
-    await TaskModel.findAll({
-      where: data.filter.where,
-    })
-  ).length;
-
   return {
-    tasks,
-    totalTasks,
+    tasks: tasks.rows,
+    totalTasks: tasks.count,
   };
 };
 
-export const createTask = async (data) => {
+export const createTask = async ({ userId, name }) => {
   const newTask = await TaskModel.create({
-    name: data.name,
-    userId: data.userId,
+    name: name,
+    userId: userId,
     date: new Date().toLocaleDateString(),
     time: new Date().toLocaleTimeString().slice(0, 5),
   });
@@ -35,11 +30,11 @@ export const createTask = async (data) => {
   };
 };
 
-export const deleteTask = async (data) => {
+export const deleteTask = async ({ id, userId }) => {
   await TaskModel.destroy({
     where: {
-      id: data.id,
-      userId: data.userId,
+      id: id,
+      userId: userId,
     },
   });
   return {
@@ -47,16 +42,16 @@ export const deleteTask = async (data) => {
   };
 };
 
-export const updateTask = async (data) => {
+export const updateTask = async ({ userId, id, name, isDone }) => {
   await TaskModel.update(
     {
-      name: data.name,
-      isDone: data.isDone,
+      name: name,
+      isDone: isDone,
     },
     {
       where: {
-        id: data.id,
-        userId: data.userId,
+        id: id,
+        userId: userId,
       },
     }
   );

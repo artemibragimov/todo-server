@@ -18,7 +18,7 @@ export const generateToken = async (payload) => {
   };
 };
 
-export const saveToken = async (userId, refreshToken) => {
+export const saveToken = async ({ userId, refreshToken }) => {
   const tokenData = await TokenModel.findOne({
     where: {
       userId: userId,
@@ -82,7 +82,7 @@ export const refresh = async (data) => {
   if (!token || !tokenFromDb) throw ApiError.UnauthorizedAccessError();
 
   const tokens = await generateToken({ id: token.id });
-  await saveToken(token.id, tokens.refreshToken);
+  await saveToken({ userId: token.id, refreshToken: tokens.refreshToken });
 
   return tokens;
 };
