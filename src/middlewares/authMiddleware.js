@@ -1,10 +1,9 @@
-import { TokenServices } from '../services/index.js';
 import { ApiError } from '../utils/apiError.js';
+import * as TokenServices from '../services/token.services.js';
 
-const authMiddleware = (req, res, next) => {
+export default function authMiddleware(req, res, next) {
   try {
     const accessToken = req.headers.authorization.split(' ')[1];
-
     const validate = TokenServices.validateAccessToken(accessToken);
     if (!validate) throw ApiError.UnauthorizedAccessError();
 
@@ -13,6 +12,4 @@ const authMiddleware = (req, res, next) => {
   } catch (err) {
     next(err);
   }
-};
-
-export default authMiddleware;
+}

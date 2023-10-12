@@ -1,8 +1,8 @@
 import { env } from '../utils/helper.js';
 import bcrypt from 'bcrypt';
 import { UserModel } from '../models/UserModel.js';
-import { TokenServices } from './index.js';
 import { ApiError } from '../utils/apiError.js';
+import * as TokenServices from './token.services.js';
 
 export const register = async (data) => {
   const salt = await bcrypt.genSalt(parseInt(env.SALT));
