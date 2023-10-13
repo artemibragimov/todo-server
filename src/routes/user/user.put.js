@@ -2,7 +2,7 @@ import { Router } from 'express';
 import * as UserServices from '../../services/user.services.js';
 import authMiddleware from '../../middlewares/authMiddleware.js';
 import { updateMeValidations } from '../../utils/validations.js';
-import handleValidationErrors from '../../middlewares/handleValidationErrors.js';
+import handleValidationErrors from '../../middlewares/formValidation.js';
 export default Router().put(
   '/',
   authMiddleware,

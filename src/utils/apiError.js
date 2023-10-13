@@ -1,9 +1,10 @@
 export class ApiError extends Error {
   status;
 
-  constructor(status, message) {
-    super(message);
+  constructor(status, data) {
+    super();
     this.status = status;
+    this.data = data;
   }
 
   static UnauthorizedAccessError() {
@@ -14,7 +15,7 @@ export class ApiError extends Error {
     return new ApiError(403, 'User is not authorized');
   }
 
-  static BadRequest(message) {
-    return new ApiError(400, message);
+  static BadRequest(data) {
+    return new ApiError(400, data);
   }
 }

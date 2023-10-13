@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as AuthServices from '../../../services/auth.services.js';
 import { registerValidations } from '../../../utils/validations.js';
-import handleValidationErrors from '../../../middlewares/handleValidationErrors.js';
+import handleValidationErrors from '../../../middlewares/formValidation.js';
 
 export default Router().post(
   '/',
