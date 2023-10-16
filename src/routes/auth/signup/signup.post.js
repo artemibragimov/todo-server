@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import * as AuthServices from '../../../services/auth.services.js';
 import { registerValidations } from '../../../utils/validations.js';
-import handleValidationErrors from '../../../middlewares/formValidation.js';
+import validResult from '../../../middlewares/validResult.js';
 
 export default Router().post(
   '/',
   registerValidations,
-  handleValidationErrors,
+  validResult,
   async (req, res, next) => {
     try {
       const tokens = await AuthServices.register({

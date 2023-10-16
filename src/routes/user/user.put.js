@@ -2,12 +2,12 @@ import { Router } from 'express';
 import * as UserServices from '../../services/user.services.js';
 import authMiddleware from '../../middlewares/authMiddleware.js';
 import { updateMeValidations } from '../../utils/validations.js';
-import handleValidationErrors from '../../middlewares/formValidation.js';
+import validResult from '../../middlewares/validResult.js';
 export default Router().put(
   '/',
   authMiddleware,
   updateMeValidations,
-  handleValidationErrors,
+  validResult,
   async (req, res, next) => {
     try {
       res.json(

@@ -1,7 +1,7 @@
 import { validationResult } from 'express-validator';
 import { ApiError } from '../utils/apiError.js';
 
-export default (req, res, next) => {
+export default function validResult(req, res, next) {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -14,4 +14,4 @@ export default (req, res, next) => {
   }
 
   next();
-};
+}

@@ -25,8 +25,10 @@ export const createTask = async ({ userId, name }) => {
     time: new Date().toLocaleTimeString().slice(0, 5),
   });
 
+  const { userId: uId, ...otherData } = newTask.dataValues;
+
   return {
-    newTask,
+    ...otherData,
   };
 };
 
