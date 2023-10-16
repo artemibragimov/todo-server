@@ -100,6 +100,6 @@ export const updatePasswordValidations = [
 
 export const taskValidations = [
   body('name')
-    .isLength({ max: 70 })
+    .isLength({ max: 3 })
     .withMessage('The password must consist of at least 6 characters'),
 ];
