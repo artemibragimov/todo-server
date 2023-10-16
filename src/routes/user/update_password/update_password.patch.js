@@ -5,7 +5,7 @@ import * as UserServices from '../../../services/user.services.js';
 import authMiddleware from '../../../middlewares/authMiddleware.js';
 import { updatePasswordValidations } from '../../../utils/validations.js';
 import validResult from '../../../middlewares/validResult.js';
-export default Router().put(
+export default Router().patch(
   '/',
   authMiddleware,
   updatePasswordValidations,

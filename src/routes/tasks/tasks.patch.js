@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as TaskServices from '../../services/task.services.js';
 import authMiddleware from '../../middlewares/authMiddleware.js';
-export default Router().put('/', authMiddleware, async (req, res, next) => {
+export default Router().patch('/', authMiddleware, async (req, res, next) => {
   try {
     res.json(
       await TaskServices.updateTask({
