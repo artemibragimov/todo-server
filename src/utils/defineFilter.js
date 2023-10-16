@@ -8,7 +8,10 @@ export const defineFilter = (filter) => {
     },
     Today: {
       where: { date: new Date().toLocaleDateString() },
-      order: [['time'], ['id']],
+      order: [
+        ['time', 'DESC'],
+        ['id', 'DESC'],
+      ],
     },
   };
 
